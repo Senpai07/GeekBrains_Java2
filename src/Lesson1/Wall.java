@@ -19,7 +19,7 @@ public class Wall implements Obstacle {
   }
 
   @Override
-  public void Passing(Competitor competitor) {
+  public void passing(Competitor competitor) {
     if (competitor.jump() < height) {
       competitor.setCompetition(false);
       System.out.println(competitor.getName() + " НЕ перепрыгнул!");

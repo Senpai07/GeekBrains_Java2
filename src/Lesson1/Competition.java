@@ -30,7 +30,7 @@ public class Competition {
     for (Obstacle obstacle : obstacleList) {
       for (Competitor competitor : competitorList) {
         if (competitor.getCompetition()) {
-          obstacle.Passing(competitor);
+          obstacle.passing(competitor);
         }
       }
     }
