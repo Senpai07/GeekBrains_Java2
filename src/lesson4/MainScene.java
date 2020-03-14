@@ -46,13 +46,8 @@ public class MainScene {
       chatMessageList.getItems().addAll(myText);
 
       if (!userList.getSelectionModel().isEmpty()) {
-        chatMessageList
-            .getItems()
-            .add(
-                String.format(
-                    "%s: %s",
-                    userList.getSelectionModel().getSelectedItem(),
-                    userMessageEdit.getCharacters().toString()));
+        chatMessageList.getItems().add(
+                String.format("%s: %s", userList.getSelectionModel().getSelectedItem(), userMessageEdit.getCharacters().toString()));
         userList.getSelectionModel().clearSelection();
       }
       userMessageEdit.clear();
