@@ -24,8 +24,7 @@ public class MyChatServer {
       new Thread(this::consoleHandler).start();
       // Подключаем клиентов...
       System.out.println("Сервер ожидает подключения");
-      boolean flag = true;
-      while (flag) {
+      while (true) {
         System.out.println("Введите сообщение:");
         try {
           Socket socket = server.accept();
@@ -63,7 +62,7 @@ public class MyChatServer {
         System.out.printf("Клиент %d отключен%n", o.getOwnNumber());
       }
     }
-    if (clients.size() == 0) {
+    if (clients.isEmpty()) {
       System.out.println("Не подключено ни одного клиента!");
     } else {
       System.out.println("Сообщение отправлено.");
