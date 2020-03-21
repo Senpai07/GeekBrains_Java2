@@ -1,5 +1,6 @@
 package ru.geekbrains.java2.client.model;
 
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import ru.geekbrains.java2.client.controller.AuthEvent;
 import ru.geekbrains.java2.client.view.Message;
@@ -46,7 +47,7 @@ public class NetworkService {
                     successfulAuthEvent.authIsSuccessful(nickname);
                   } else if (messageHandler != null) {
                     messageHandler.accept(message);
-                  } else System.out.println("Ошибка авторизации: " + message);
+                  } else Platform.runLater(() ->Message.ShowMessage("Ошибка аутентификации!", message, Alert.AlertType.ERROR));
                 } catch (IOException e) {
                   System.out.println("Поток чтения был прерван!");
                   return;

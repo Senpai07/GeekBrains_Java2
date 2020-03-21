@@ -87,7 +87,7 @@ public class ClientHandler {
         String username =
             networkServer.getAuthService().getUsernameByLoginAndPassword(login, password);
         if (username == null) {
-          sendMessage("Отсутствует учетная запись по данному логину и паролю!");
+          sendMessage("Не верный логин или пароль!");
         } else {
           nickname = username;
           networkServer.broadcastMessage(nickname + " зашел в чат!", this);

@@ -35,7 +35,7 @@ public class AuthDialog {
     try {
       controller.sendAuthMessage(userNameEdit.getText().trim(), userPassEdit.getText().trim());
     } catch (IOException e) {
-      Message.ShowMessage("Ошибка!!!", "Ошибка при попытки аутентификации", Alert.AlertType.ERROR);
+      Message.ShowMessage("Ошибка при попытке аутентификации!", e.getMessage(), Alert.AlertType.ERROR);
     }
   }
 }
