@@ -2,15 +2,25 @@ package ru.geekbrains.java2.client.view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import ru.geekbrains.java2.client.controller.ClientController;
+
+import java.io.IOException;
 
 public class AuthDialog {
   @FXML public Button exitButton;
-  public TextField userNameEdit;
-  public Button authButton;
-  public TextField userPassEdit;
+  @FXML public TextField userNameEdit;
+  @FXML public Button authButton;
+  @FXML public TextField userPassEdit;
+
+  private ClientController controller;
+
+  public void setController(ClientController controller) {
+    this.controller = controller;
+  }
 
   @FXML
   public void closeProgram(ActionEvent actionEvent) {
@@ -18,5 +28,14 @@ public class AuthDialog {
     Stage stage = (Stage) exitButton.getScene().getWindow();
     // do what you have to do
     stage.close();
+    System.exit(0);
+  }
+
+  public void authButtonAction(ActionEvent actionEvent) {
+    try {
+      controller.sendAuthMessage(userNameEdit.getText().trim(), userPassEdit.getText().trim());
+    } catch (IOException e) {
+      Message.ShowMessage("Ошибка!!!", "Ошибка при попытки аутентификации", Alert.AlertType.ERROR);
+    }
   }
 }
