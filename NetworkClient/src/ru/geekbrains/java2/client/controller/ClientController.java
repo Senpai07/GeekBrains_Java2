@@ -4,15 +4,16 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import ru.geekbrains.java2.client.Command;
 import ru.geekbrains.java2.client.model.NetworkService;
 import ru.geekbrains.java2.client.view.AuthDialog;
 import ru.geekbrains.java2.client.view.ClientChat;
-import ru.geekbrains.java2.client.view.Message;
 
-import javax.swing.*;
 import java.io.IOException;
+import java.util.List;
+
+import static ru.geekbrains.java2.client.Command.*;
 
 public class ClientController {
 
@@ -20,6 +21,8 @@ public class ClientController {
   private String nickname;
   private Stage primaryStage;
   private Parent rootChat;
+  private ClientChat clientChat;
+  private AuthDialog authDialog;
 
   public ClientController(String serverHost, int serverPort, Stage primaryStage) {
     this.networkService = new NetworkService(serverHost, serverPort);
@@ -39,7 +42,8 @@ public class ClientController {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    AuthDialog authDialog = loaderAuth.getController();
+    authDialog = loaderAuth.getController();
+    authDialog.setActive(true);
     authDialog.setController(this);
 
     primaryStage.setTitle("Chat client 1.0");
@@ -66,7 +70,9 @@ public class ClientController {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    ClientChat clientChat = loaderChat.getController();
+    authDialog.setActive(false);
+    clientChat = loaderChat.getController();
+    clientChat.setActive(true);
     clientChat.setController(this);
 
     primaryStage.setTitle("Chat client 1.0 : " + nickname);
@@ -83,7 +89,7 @@ public class ClientController {
 
   private void connectToServer() throws IOException {
     try {
-      networkService.connect();
+      networkService.connect(this);
     } catch (IOException e) {
       System.err.println("Failed to establish server connection");
       throw e;
@@ -91,14 +97,14 @@ public class ClientController {
   }
 
   public void sendAuthMessage(String login, String pass) throws IOException {
-    networkService.sendAuthMessage(login, pass);
+    networkService.sendCommand(authCommand(login, pass));
   }
 
-  public void sendMessage(String message) {
+  public void sendMessageToAllUsers(String message) {
     try {
-      networkService.sendMessage(message);
+      networkService.sendCommand(broadcastMessageCommand(message));
     } catch (IOException e) {
-      Message.ShowMessage("Error", "Failed to send message!", Alert.AlertType.ERROR);
+      clientChat.showError("Failed to send message!");
       e.printStackTrace();
     }
   }
@@ -109,5 +115,27 @@ public class ClientController {
 
   public String getUsername() {
     return nickname;
+  }
+
+  public void updateUsersList(List<String> users) {
+    users.remove(nickname);
+    users.add(0, "All");
+    clientChat.updateUsers(users);
+  }
+
+  public void sendPrivateMessage(String username, String message) {
+    try {
+      networkService.sendCommand(privateMessageCommand(username, message));
+    } catch (IOException e) {
+      showErrorMessage(e.getMessage());
+    }
+  }
+
+  public void showErrorMessage(String errorMessage) {
+    if (authDialog.isActive()) {
+      authDialog.showError(errorMessage);
+    } else if (clientChat.isActive()) {
+      clientChat.showError(errorMessage);
+    }
   }
 }
